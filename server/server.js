@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import userRoute from "./routes/userRoute.js";
+import errorHandler from "./middleWare/errorMiddleware.js";
 
 dotenv.config();
 
@@ -23,6 +24,8 @@ app.use(express.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(cors());
 app.use("/api/users", userRoute);
+
+app.use(errorHandler);
 
 mongoose.set("strictQuery", false);
 mongoose.connect(URI, PARAMS)

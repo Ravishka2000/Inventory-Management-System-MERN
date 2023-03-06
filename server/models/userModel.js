@@ -21,11 +21,11 @@ const user = new Schema({
         type: String,
         required: [true, "Please add a Password"],
         minLength: [6, "Password must be upto 6 Characters"],
-        maxLength: [23, "Password must not be more than 23 Characters"],
+        // maxLength: [23, "Password must not be more than 23 Characters"],
     },
     photo: {
         type: String,
-        required: [true, "Please add a Photo"]
+        required: [false, "Please add a Photo"]
     },
     phone: {
         type: String,
@@ -40,6 +40,6 @@ const user = new Schema({
     timestamps: true,
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", user);
 
 export default User;
