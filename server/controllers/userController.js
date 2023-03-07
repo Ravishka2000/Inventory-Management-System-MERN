@@ -8,7 +8,7 @@ const generateToken = (id) => {
 };
 
 const registerUser = asyncHandler (async (req, res) => {
-    const {name, email, password} = req.body
+    const {name, email, password} = req.body;
 
     if(!name || !email || !password){
         res.status(400);
@@ -37,10 +37,9 @@ const registerUser = asyncHandler (async (req, res) => {
     const token = generateToken(user._id);
 
     // Send HTTP-only cookie
-    res.cookie("token", token, {
-        path: "/",
+    res.cookie('token', token, {
+        expires: new Date(Date.now() + 900000), 
         httpOnly: true,
-        expires: new Date(Date.now() + 1000 * 86400), // 1 day
         sameSite: "none",
         secure: true,
     });
@@ -97,7 +96,7 @@ const loginUser = asyncHandler (async (req, res) => {
             _id, 
             name,
             email,
-            phone, 
+            phone,
             photo, 
             bio,
             token
@@ -109,7 +108,38 @@ const loginUser = asyncHandler (async (req, res) => {
 
 });
 
+const logout = asyncHandler (async (req, res) => {
+    res.cookie("token", "", {
+        path: "/",
+        httpOnly: true,
+        expires: new Date(0),
+        sameSite: "none",
+        secure: true,
+    });
+    return res.status(200).json({ message: "Successfully Logged Out"})
+});
+
+const getUser = asyncHandler( async (req, res) => {
+    const user = await User.findById(req.user._id);
+    if (user){
+        const {_id, name, email, phone, photo, bio} = user; 
+        res.status(200).json({
+            _id, 
+            name,
+            email, 
+            phone, 
+            photo, 
+            bio
+        })
+    }else{
+        res.status(400);
+        throw new Error("User not found");
+    }
+});
+
 export default {
     registerUser,
     loginUser,
+    logout,
+    getUser
 };
