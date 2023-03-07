@@ -170,11 +170,39 @@ const updateUser = asyncHandler (async (req, res) => {
     }
 });
 
+const changePassword = asyncHandler (async (req, res) => {
+    const user = await User.findById(req.user._id);
+
+    const { oldPassword, newPassword } = req.body;
+
+    if(!user) {
+        res.status(400);
+        throw new Error("User not found");
+    }
+
+    if(!oldPassword || !newPassword) {
+        res.status(400);
+        throw new Error("Please enter Old Password and New Password");
+    }
+
+    const passwordIsCorrect = await bcrypt.compare(oldPassword, user.password);
+
+    if(user && passwordIsCorrect) {
+        user.password = newPassword;
+        await user.save();
+        res.status(200).send("Password changed");
+    } else {
+        res.status(400);
+        throw new Error("Old password is incorrect");
+    }
+});
+
 export default {
     registerUser,
     loginUser,
     logout,
     getUser,
     loginStatus,
-    updateUser
+    updateUser,
+    changePassword
 };

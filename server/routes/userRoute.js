@@ -10,5 +10,6 @@ router.get("/logout", UserController.logout);
 router.get("/getuser", protect, UserController.getUser);
 router.get("/loggedin", UserController.loginStatus);
 router.patch("/updateuser", protect, UserController.updateUser);
+router.patch("/changepassword", protect, UserController.changePassword);
 
 export default router;
